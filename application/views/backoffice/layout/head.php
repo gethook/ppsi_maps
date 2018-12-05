@@ -25,6 +25,11 @@
   <link rel="stylesheet" href="<?php echo base_url(); ?>assets/adminlte/bower_components/jquery-ui/themes/base/jquery-ui.min.css">
   <!-- bootstrap wysihtml5 - text editor -->
   <link rel="stylesheet" href="<?php echo base_url(); ?>assets/adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css">
+  <!-- bootstrap datepicker -->
+  <link rel="stylesheet" href="<?php echo base_url(); ?>assets/adminlte/bower_components/bootstrap-datepicker/dist/css/bootstrap-datepicker.min.css">
+  <!-- Bootstrap time Picker -->
+  <link rel="stylesheet" href="<?php echo base_url(); ?>assets/adminlte/plugins/timepicker/bootstrap-timepicker.min.css">
+
 
   <!-- My Style -->
   <link rel="stylesheet" href="<?php echo base_url(); ?>assets/css/mystyle.css">

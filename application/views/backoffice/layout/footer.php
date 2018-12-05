@@ -37,6 +37,10 @@
 <script src="<?php echo base_url(); ?>assets/adminlte/bower_components/select2/dist/js/select2.full.min.js"></script>
 <!-- Bootstrap WYSIHTML5 -->
 <script src="<?php echo base_url(); ?>assets/adminlte/plugins/bootstrap-wysihtml5/bootstrap3-wysihtml5.all.min.js"></script>
+<!-- bootstrap datepicker -->
+<script src="<?php echo base_url(); ?>assets/adminlte/bower_components/bootstrap-datepicker/dist/js/bootstrap-datepicker.min.js"></script>
+<!-- bootstrap time picker -->
+<script src="<?php echo base_url(); ?>assets/adminlte/plugins/timepicker/bootstrap-timepicker.min.js"></script>
 
 
 <script>
@@ -57,9 +61,17 @@
       'info'        : true,
       'autoWidth'   : false
     })
-    $('.datepicker').datepicker(
+    $('#datepicker').datepicker(
     {
-      dateFormat: "yy-mm-dd"
+      autoclose: true,
+      format: "dd MM yyyy"
+    })
+    $('.timepicker').timepicker({
+      //template: false,
+      showMeridian: false,
+      showInputs: true,
+      minuteStep: 5,
+      defaultTime: '08:00'
     })
   })
 </script>

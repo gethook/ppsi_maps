@@ -98,7 +98,7 @@ class Auth
 		$this->CI->session->unset_userdata($data_session);
 
 		// Menampilkan pesan setelah proses penghapusan data session berhasil
-		$this->CI->session->set_flashdata('success_logout', 'Terima kasih, Anda berhasil keluar dari halaman admin.');
+		$this->CI->session->set_flashdata('success_logout', 'Terima kasih, Anda berhasil keluar.');
 
 
 		// Dialihkan ke halaman login

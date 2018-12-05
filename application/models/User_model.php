@@ -83,6 +83,16 @@ class User_model extends CI_Model {
 		return $this->db->trans_status();
 	}
 
+	public function get_by_role($role_id='')
+	{
+		$this->db->select('user.*');
+		$this->db->from('user_role');
+		$this->db->join('user', 'user.user_id = user_role.user_id', 'left');
+		$this->db->where('user_role.role_id', $role_id);
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
 }
 
 /* End of file User_model.php */

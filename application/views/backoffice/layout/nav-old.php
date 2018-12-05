@@ -99,13 +99,10 @@ $is_owner_agency = in_array(4, $roles);
 
         <?php if(!$is_employee){ ?>
           <li><a href="<?php echo base_url('proyek/developer'); ?>"><i class="fa fa-building"></i> <span>Proyek</span></a></li>
-          <?php if($is_marketing) { ?>
-            <li><a href="<?php echo base_url('konsumen'); ?>"><i class="fa fa-address-book"></i> <span>Konsumen</span></a></li>
-            <li><a href="<?php echo base_url('survey/marketing'); ?>"><i class="fa fa-calendar"></i> <span>Survey</span></a></li>
+          <?php if($is_agency) { ?>
+            <!-- <li><a href="#"><i class="fa fa-address-card"></i> <span>Marketing</span></a></li> -->
           <?php } ?>
-          <?php if($is_developer) { ?>
-            <li><a href="<?php echo base_url('survey/developer'); ?>"><i class="fa fa-calendar"></i> <span>Survey</span></a></li>
-          <?php } ?>
+          <!-- <li><a href="#"><i class="fa fa-address-book"></i> <span>Konsumen</span></a></li> -->
           <!-- <li><a href="#"><i class="fa fa-calendar"></i> <span>Survey</span></a></li> -->
           <!-- <li><a href="#"><i class="fa fa-book"></i> <span>Booking &amp; Akad</span></a></li> -->
         <?php } ?>

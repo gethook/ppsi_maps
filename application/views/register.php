@@ -66,9 +66,8 @@
         <!--<?php //foreach($role as $role): ?>
         <option value="<?php //echo $role['role_id']; ?>" <?php //echo set_select('role', $role['role_id']); ?>><?php //echo $role['role_type_name']; ?></option>
         <?php //endforeach; ?>-->
+        <option value="3">Developer (Operator)</option>
         <option value="6">Marketing</option>
-        <option value="5">Agency</option>
-        <option value="3">Developer</option>
       </select>
     </div>
     <h3>Login detil</h3>

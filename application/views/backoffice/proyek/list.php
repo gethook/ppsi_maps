@@ -53,6 +53,7 @@
 								}
 								?>								
 							</p>
+							<p><?php echo 'Available: ' . $project['available_unit'] . ' dari ' . $project['total_unit'] . ' unit.'; ?></p>
 						</div>
 						<div class="col-md-3">
 							<div class="btn-group pull-right">
@@ -62,11 +63,23 @@
 									<span class="sr-only">Toggle Dropdown</span>
 								</button>
 								<ul class="dropdown-menu" role="menu">
-									<li><a href="<?php echo base_url('proyek/detil/' . $project['project_id']); ?>"><span class="fa fa-eye fa-fw"></span> Lihat Detil</a></li>
-									<li><a href="<?php echo base_url('proyek/edit/' . $project['project_id']); ?>"><span class="fa fa-pencil fa-fw"></span> Edit</a></li>
-									<li class="disabled"><a href=""><span class="fa fa-trash fa-fw"></span> Hapus</a></li>
-									<li class="divider"></li>
-									<li><a href="#"><span class="fa fa-users fa-fw"></span> Marketing/Agency</a></li>
+									<?php 
+									foreach ($actions as $action) {
+										if ($action['url'] == '') {
+											echo '<li class="divider"></li>';
+										} else {
+											echo '<li><a href="' . $action['url'] . $project['project_id'] .'">';
+											echo '<span class="fa fa-fw ' . $action['fa'] . '"></span>';
+											echo $action['label'];
+											echo '</a></li>';
+										}
+									}
+									?>
+									<!-- <li><a href="<?php //echo base_url('proyek/detil/' . $project['project_id']); ?>"><span class="fa fa-eye fa-fw"></span> Lihat Detil</a></li> -->
+									<!-- <li><a href="<?php //echo base_url('proyek/edit/' . $project['project_id']); ?>"><span class="fa fa-pencil fa-fw"></span> Edit</a></li> -->
+									<!-- <li class="disabled"><a href=""><span class="fa fa-trash fa-fw"></span> Hapus</a></li> -->
+									<!-- <li class="divider"></li> -->
+									<!-- <li><a href="<?php //echo base_url('proyek/marketing/' . $project['project_id']); ?>"><span class="fa fa-users fa-fw"></span> Marketing</a></li> -->
 								</ul>
 							</div>
 						</div>

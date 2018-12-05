@@ -18,6 +18,8 @@ class Proyek extends CI_Controller {
 		$this->load->model('unittypechoice_model');
 		$this->load->model('pricechoice_model');
 		$this->load->model('gallery_model');
+		$this->load->model('projectmarketing_model');
+		$this->load->model('user_model');
 	}
 
 	public function index()
@@ -87,11 +89,48 @@ class Proyek extends CI_Controller {
 			$is_devteam = $this->auth->cek_dev_team($developer_id);			
 		}
 
+		if (!$is_devteam)
+		{
+			$projects = $this->projectmarketing_model->get_by_marketing($user_id);
+		}
+
 		$itr=0;
-		foreach ($projects as $p) {
-			$lowest_price = $this->project_model->get_lowest_price($p['project_id']);
-			$projects[$itr]['lowest_price'] = $lowest_price;
-			$itr++;
+		if ($projects) {
+			foreach ($projects as $p) {
+				$lowest_price = $this->project_model->get_lowest_price($p['project_id']);
+				$projects[$itr]['lowest_price'] = $lowest_price;
+
+				$total_unit = $this->project_model->count_unit($p['project_id']);
+				$projects[$itr]['total_unit'] = $total_unit;
+
+				$available_unit = $this->project_model->count_available_unit($p['project_id']);
+				$projects[$itr]['available_unit'] = $available_unit;
+				$itr++;
+			}
+		}
+
+		$actions = array();
+		$actions[] = array(
+			'url' => base_url('proyek/detil/'),
+			'fa' => 'fa-eye',
+			'label' => 'Lihat Detil'
+		);
+		if ($is_devteam) {
+			$actions[] = array(
+				'url' => base_url('proyek/edit/'),
+				'fa' => 'fa-edit',
+				'label' => 'Edit'
+			);
+			$actions[] = array(
+				'url' => '',
+				'fa' => '',
+				'label' => ''
+			);
+			$actions[] = array(
+				'url' => base_url('proyek/marketing/'),
+				'fa' => 'fa-users',
+				'label' => 'Marketing'
+			);
 		}
 
 
@@ -99,6 +138,7 @@ class Proyek extends CI_Controller {
 			'title' => 'Listing Proyek',
 			'is_devteam' => $is_devteam,
 			'projects' => $projects,
+			'actions' => $actions,
 			'content' => 'backoffice/proyek/list' 
 		);
 		$this->load->view('backoffice/layout/wrapper', $data, FALSE);
@@ -1047,6 +1087,147 @@ class Proyek extends CI_Controller {
 		{
 			redirect(base_url('proyek/detil/' . $project['project_id']));
 		}
+	}
+
+	public function marketing($project_id='')
+	{
+		if ($project_id == '')
+			redirect(base_url('proyek/developer'));
+
+		$project = $this->project_model->get($project_id);
+		if (!$project || !array_key_exists('project_id', $project))
+			redirect(base_url('proyek/developer'));
+
+		$user_id = $this->session->userdata('user_id');
+		$is_devteam = FALSE;
+
+		$developer = $this->developer_model->get_by_user_id($user_id);
+		if ($developer && array_key_exists('developer_id', $developer)) 
+		{
+			$is_devteam = $this->auth->cek_dev_team($project['developer_id']);
+		}
+
+		if(!$is_devteam) redirect(base_url('proyek/developer'));
+
+		$area = $this->area_model->get_prov_kec($project['area_id']);
+		$area_name = trim($area['area_name']);
+		if($area['induk'])
+		{
+			$area_name .= ', ' . $area['induk'];
+			if($area['induk2'])
+			{
+				$area_name .= ', ' . $area['induk2'];
+			}
+		}
+		if($project['project_gmaps'])
+		{
+			$fa = '<span class="fa fa-map-marker"></span> ';
+									//echo anchor($project['project_gmaps'], $fa . $project['area_name'], 'target="_blank"');
+			$h2 = anchor($project['project_gmaps'], $fa . $area_name, 'target="_blank"');
+		}
+		else
+		{
+									//echo $project['area_name'];
+			$h2 = $area_name;
+		}
+
+		$available_marketing = $this->projectmarketing_model->available_marketing($project_id);
+		$marketings = $this->projectmarketing_model->get_by_project($project_id);
+		$data = array(
+			'title' => $project['project_name'],
+			'h2' => $h2,
+			'project' => $project,
+			'marketings' => $marketings,
+			'available_marketing' => $available_marketing,
+			'content' => 'backoffice/proyek/marketing/list',
+		);
+		$this->load->view('backoffice/layout/wrapper', $data, FALSE);
+
+	}
+
+	public function tambahmarketing($project_id='')
+	{
+		# code...
+		$user_id = $this->session->userdata('user_id');
+		$is_devteam = FALSE;
+
+		$project = $this->project_model->get($project_id);
+		if (!$project || !array_key_exists('developer_id', $project))
+			redirect(base_url('backoffice/proyek'));
+		$developer = $this->developer_model->get_by_user_id($user_id);
+		if ($developer && array_key_exists('developer_id', $developer)) 
+		{
+			$is_devteam = $this->auth->cek_dev_team($project['developer_id']);
+		}
+
+		if ($is_devteam) 
+		{
+			$this->form_validation->set_rules('marketings', 'Marketing', 'callback_marketing_check');
+			if ($this->form_validation->run()) 
+			{
+				$marketings = $this->input->post('marketings', TRUE);
+				$data = array();
+				foreach ($marketings as $marketing) {
+					$data[] = array(
+						'project_id' => $project_id,
+						'user_id' => $marketing,
+					);
+				}
+
+				$this->projectmarketing_model->add_batch($data);
+				redirect(base_url('proyek/marketing/' . $project_id));
+			}
+		}
+		else
+		{
+			$data = array(
+				'title' => 'Unauthorized!',
+				'content' => 'errors/adminlte/unauthorized'
+			);
+			$this->load->view('backoffice/layout/wrapper', $data, FALSE);
+		}
+		
+	}
+
+	public function marketing_check()
+	{
+		if (empty($this->input->post('marketings'))) {
+			$this->form_validation->set_message('marketing_check', 'Pilih minimal satu marketing');
+			return FALSE;
+		} else {
+			return TRUE;
+		}
+	}
+
+	public function hapusmarketing($project_marketing_id='')
+	{
+		# code...
+		$user_id = $this->session->userdata('user_id');
+		$is_devteam = FALSE;
+
+		$project = $this->projectmarketing_model->get_project($project_marketing_id);
+		if (!$project || !array_key_exists('developer_id', $project))
+			redirect(base_url('backoffice/proyek'));
+		$developer = $this->developer_model->get_by_user_id($user_id);
+		if ($developer && array_key_exists('developer_id', $developer)) 
+		{
+			$is_devteam = $this->auth->cek_dev_team($project['developer_id']);
+		}
+
+		if ($is_devteam) 
+		{
+			$this->projectmarketing_model->delete($project_marketing_id);
+			redirect(base_url('proyek/marketing/' . $project['project_id']));
+		}
+		else
+		{
+			$data = array(
+				'title' => 'Unauthorized!',
+				'content' => 'errors/adminlte/unauthorized'
+			);
+			$this->load->view('backoffice/layout/wrapper', $data, FALSE);
+		}
+		
 	}
 
 
