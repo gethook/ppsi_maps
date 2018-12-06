@@ -20,6 +20,18 @@ class Devteam_model extends CI_Model {
 		return $query->row_array();
 	}
 
+	public function get_available_operator()
+	{
+		$this->db->select('*');
+		$this->db->from('user_role');
+		$this->db->join('developer_team', 'user_role.user_role_id = developer_team.user_role_id', 'left');
+		$this->db->join('user', 'user_role.user_id = user.user_id', 'left');
+		$this->db->where('user_role.role_id', 3);
+		$this->db->where('developer_team.user_role_id IS NULL');
+		$query = $this->db->get();
+		return $query->result_array();
+	}
+
 	public function get_by_user_id($user_id='')
 	{
 		$this->db->select('developer_team.*');

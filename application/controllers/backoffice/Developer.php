@@ -38,23 +38,7 @@ class Developer extends CI_Controller {
 			$is_owner_developer = $this->auth->cek_dev_owner($developer['developer_id']);
 			$kota = $this->area_model->get_kota($developer['area_id']);
 			$team = $this->devteam_model->get_by_dev($developer['developer_id']);
-			$users = $this->user_model->get();
-
-			$team_uids = array_column($team, 'user_id');
-			//print_r($team_uids);die();
-			$i = 0;
-			foreach ($users as $user) {
-				$slf = ($user['user_id'] == $user_id);
-				$member = in_array($user['user_id'], $team_uids);
-				if ($slf || $member) {
-					$users[$i]['disabled'] = TRUE;
-				} else {
-					$users[$i]['disabled'] = FALSE;
-				}
-				$i++;
-			}
-			// print_r($users);
-			// die();
+			$users = $this->devteam_model->get_available_operator();
 
 			$data = array(
 				'title' => 'Profil Developer: ' . $developer['developer_name'],
