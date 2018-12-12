@@ -52,20 +52,12 @@ class Projectmarketing_model extends CI_Model {
 		$this->db->select('user.*, project_marketing.project_marketing_id, project_marketing.project_id');
 		$this->db->from('user');
 		$this->db->join('user_role', 'user.user_id = user_role.user_id', 'left');
-		$this->db->join('project_marketing', 'user.user_id = project_marketing.user_id', 'left');
+		$this->db->join('project_marketing', 'user.user_id = project_marketing.user_id AND project_marketing.project_id = ' . $project_id, 'left');
 		$this->db->where('user_role.role_id', 6);
+		$this->db->where('(project_marketing.project_id != ' . $project_id . ' OR project_marketing.project_id IS NULL)');
 		$query = $this->db->get();
 		$result = $query->result_array();
-		$filtered = array();
-		if($result)
-		{
-			foreach ($result as $res) {
-				if ($res['project_id'] != $project_id) {
-					$filtered[] = $res;
-				}
-			}
-		}
-		return $filtered;
+		return $result;
 	}
 
 	public function add_batch($data='')
