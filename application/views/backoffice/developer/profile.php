@@ -67,7 +67,9 @@
 						<th>Email</th>
 						<th>Domisili</th>
 						<th>Role</th>
+						<?php if($is_owner_developer) { ?>
 						<th>Action</th>
+						<?php } ?>
 					</tr>
 				</thead>
 				<tbody>
@@ -79,7 +81,9 @@
 							<td><?php echo $team_member['email']; ?></td>
 							<td></td>
 							<td><?php echo $team_member['role']; ?></td>
-							<td><?php if($team_member['role_id'] != 2) include 'rm_team.php'; ?></td>
+							<?php if($is_owner_developer) { ?>
+							<td><?php if($team_member['role_id'] != 2 && $is_owner_developer) include 'rm_team.php'; ?></td>
+							<?php } ?>
 						</tr>
 					<?php endforeach; ?>
 				</tbody>
